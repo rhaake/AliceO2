@@ -14,7 +14,6 @@
 
 using namespace o2::emcal;
 
-
 Cluster::Cluster(Float_t time, int firstcell, int ncells) : o2::dataformats::TimeStamp<Float16_t>(time),
                                                             mCellIndices(firstcell, ncells)
 {

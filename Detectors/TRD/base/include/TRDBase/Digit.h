@@ -14,7 +14,7 @@
 #include <cstdint>
 #include <vector>
 #include <array>
-#include <map>
+#include <unordered_map>
 #include "Rtypes.h" // for ClassDef
 
 namespace o2
@@ -28,10 +28,10 @@ constexpr int kTB = 30;
 constexpr int KEY_MIN = 0;
 constexpr int KEY_MAX = 2211727;
 
-typedef std::uint16_t ADC_t;                         // the ADC value type
-typedef std::array<ADC_t, kTB> ArrayADC_t;           // the array ADC
-typedef std::vector<Digit> DigitContainer_t;         // the digit container type
-typedef std::map<int, ArrayADC_t> SignalContainer_t; // a map container type for signal handling during digitization
+typedef std::uint16_t ADC_t;                                   // the ADC value type
+typedef std::array<ADC_t, kTB> ArrayADC_t;                     // the array ADC
+typedef std::vector<Digit> DigitContainer_t;                   // the digit container type
+typedef std::unordered_map<int, ArrayADC_t> SignalContainer_t; // a map container type for signal handling during digitization
 
 class Digit
 {
@@ -90,10 +90,10 @@ class Digit
   }
 
  private:
-  std::uint16_t mDetector{ 0 }; // TRD detector number, 0-539
-  std::uint8_t mRow{ 0 };       // pad row, 0-15
-  std::uint8_t mPad{ 0 };       // pad within pad row, 0-143
-  ArrayADC_t mADC{};            // ADC vector (30 time-bins)
+  std::uint16_t mDetector{0}; // TRD detector number, 0-539
+  std::uint8_t mRow{0};       // pad row, 0-15
+  std::uint8_t mPad{0};       // pad within pad row, 0-143
+  ArrayADC_t mADC{};          // ADC vector (30 time-bins)
 
   ClassDefNV(Digit, 1);
 };

@@ -16,6 +16,7 @@
 #include <vector>
 #include "CommonDataFormat/TimeStamp.h"
 #include "CommonDataFormat/RangeReference.h"
+#include "MathUtils/Cartesian3D.h"
 
 namespace o2
 {

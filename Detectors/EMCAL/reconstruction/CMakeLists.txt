@@ -9,11 +9,27 @@
 # submit itself to any jurisdiction.
 
 o2_add_library(EMCALReconstruction
-               SOURCES src/ClusterizerParameters.cxx SOURCES src/Clusterizer.cxx SOURCES src/ClusterizerTask.cxx
-               PUBLIC_LINK_LIBRARIES O2::EMCALBase O2::DetectorsBase
-                                     O2::DataFormatsEMCAL)
+               SOURCES src/RawReaderFile.cxx
+                       src/RawBuffer.cxx
+                       src/RAWDataHeader.cxx
+                       src/AltroDecoder.cxx
+                       src/ClusterizerParameters.cxx
+                       src/Clusterizer.cxx
+                       src/ClusterizerTask.cxx
+               PUBLIC_LINK_LIBRARIES FairRoot::Base O2::Headers
+                                     AliceO2::InfoLogger
+                                     O2::EMCALBase)
 
-o2_target_root_dictionary(EMCALReconstruction
-                          HEADERS include/EMCALReconstruction/ClusterizerParameters.h
-                          HEADERS include/EMCALReconstruction/Clusterizer.h
-                          HEADERS include/EMCALReconstruction/ClusterizerTask.h)
+o2_target_root_dictionary(
+                          EMCALReconstruction
+                          HEADERS include/EMCALReconstruction/RawReaderFile.h
+                                  include/EMCALReconstruction/AltroDecoder.h
+                                  include/EMCALReconstruction/ClusterizerParameters.h
+                                  include/EMCALReconstruction/Clusterizer.h
+                                  include/EMCALReconstruction/ClusterizerTask.h
+)
+
+o2_add_executable(rawreader-file
+                  COMPONENT_NAME emcal
+                  PUBLIC_LINK_LIBRARIES O2::EMCALReconstruction
+                  SOURCES run/rawReaderFile.cxx)

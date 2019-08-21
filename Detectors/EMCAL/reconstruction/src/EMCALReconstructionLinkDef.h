@@ -14,8 +14,11 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
-//#pragma link C++ namespace o2::emcal+;
-#pragma link C++ class o2::emcal::ClusterizerParameters+;
-#pragma link C++ class o2::emcal::Clusterizer+;
-#pragma link C++ class o2::emcal::ClusterizerTask+;
+#pragma link C++ class o2::emcal::ClusterizerParameters + ;
+#pragma link C++ class o2::emcal::Clusterizer + ;
+#pragma link C++ class o2::emcal::ClusterizerTask + ;
+#pragma link C++ class o2::emcal::RAWDataHeader + ;
+#pragma link C++ class o2::emcal::RawReaderFile + ;
+#pragma link C++ class o2::emcal::AltroDecoder + ;
+
 #endif

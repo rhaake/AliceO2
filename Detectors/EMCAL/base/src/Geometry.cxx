@@ -189,7 +189,7 @@ Geometry* Geometry::GetInstance(const std::string_view name, const std::string_v
                                 const std::string_view mctitle)
 {
   if (!sGeom) {
-    if (name != std::string("")) { // get default geometry
+    if (!name.length()) { // get default geometry
       sGeom = new Geometry(DEFAULT_GEOMETRY, mcname, mctitle);
     } else {
       sGeom = new Geometry(name, mcname, mctitle);
@@ -323,8 +323,7 @@ void Geometry::DefineSamplingFraction(const std::string_view mcname, const std::
 
   LOG(INFO) << "MC modeler <" << mcname << ">, Title <" << mctitle << ">: Sampling " << std::setw(2)
             << std::setprecision(3) << mSampling << ", model fraction with respect to G3 "
-            << samplingFactorTranportModel << ", final sampling " << mSampling * samplingFactorTranportModel
-            << FairLogger::endl;
+            << samplingFactorTranportModel << ", final sampling " << mSampling * samplingFactorTranportModel;
 
   mSampling *= samplingFactorTranportModel;
 }
@@ -672,7 +671,7 @@ void Geometry::GetGlobal(Int_t absId, Double_t glob[3]) const
     loc[1] = cellpos.Y();
     loc[2] = cellpos.Z();
   } catch (InvalidCellIDException& e) {
-    LOG(ERROR) << e.what() << FairLogger::endl;
+    LOG(ERROR) << e.what();
     return;
   }
 
@@ -747,8 +746,7 @@ Int_t Geometry::GetAbsCellIdFromCellIndexes(Int_t nSupMod, Int_t iphi, Int_t iet
   // Check if the indeces correspond to existing SM or tower indeces
   if (iphi < 0 || iphi >= EMCAL_ROWS || ieta < 0 || ieta >= EMCAL_COLS || nSupMod < 0 ||
       nSupMod >= GetNumberOfSuperModules()) {
-    LOG(DEBUG) << "Wrong cell indexes : SM " << nSupMod << ", column (eta) " << ieta << ", row (phi) " << iphi
-               << FairLogger::endl;
+    LOG(DEBUG) << "Wrong cell indexes : SM " << nSupMod << ", column (eta) " << ieta << ", row (phi) " << iphi;
     return -1;
   }
 
@@ -803,7 +801,7 @@ Int_t Geometry::SuperModuleNumberFromEtaPhi(Double_t eta, Double_t phi) const
   Int_t nphism = mNumberOfSuperModules / 2;
   Int_t nSupMod = 0;
   for (Int_t i = 0; i < nphism; i++) {
-    LOG(DEBUG) << "Sec " << i << ": Min " << mPhiBoundariesOfSM[2 * i] << ", Max " << mPhiBoundariesOfSM[2 * i + 1] << FairLogger::endl;
+    LOG(DEBUG) << "Sec " << i << ": Min " << mPhiBoundariesOfSM[2 * i] << ", Max " << mPhiBoundariesOfSM[2 * i + 1];
     if (phi >= mPhiBoundariesOfSM[2 * i] && phi <= mPhiBoundariesOfSM[2 * i + 1]) {
       nSupMod = 2 * i;
       if (eta < 0.0)
@@ -815,7 +813,7 @@ Int_t Geometry::SuperModuleNumberFromEtaPhi(Double_t eta, Double_t phi) const
       }
 
       LOG(DEBUG) << "eta " << eta << " phi " << phi << " (" << std::setw(5) << std::setprecision(2)
-                 << phi * TMath::RadToDeg() << ") : nSupMod " << nSupMod << ": #bound " << i << FairLogger::endl;
+                 << phi * TMath::RadToDeg() << ") : nSupMod " << nSupMod << ": #bound " << i;
       return nSupMod;
     }
   }
@@ -870,8 +868,7 @@ Int_t Geometry::GetAbsCellIdFromEtaPhi(Double_t eta, Double_t phi) const
   if (GetSMType(nSupMod) == DCAL_STANDARD)
     ieta -= 16; // jump 16 cells for DCSM
 
-  LOG(DEBUG2) << " ieta " << ieta << " : dmin " << dmin << " (eta=" << eta << ") : nSupMod " << nSupMod
-              << FairLogger::endl;
+  LOG(DEBUG2) << " ieta " << ieta << " : dmin " << dmin << " (eta=" << eta << ") : nSupMod " << nSupMod;
 
   // patch for mapping following alice convention
   if (nSupMod % 2 ==
@@ -946,7 +943,7 @@ std::tuple<int, int> Geometry::GetCellPhiEtaIndexInSModule(Int_t nSupMod, Int_t 
 
   if (iphi < 0 || ieta < 0)
     LOG(DEBUG) << " nSupMod " << nSupMod << " nModule " << nModule << " nIphi " << nIphi << " nIeta " << nIeta
-               << " => ieta " << ieta << " iphi " << iphi << FairLogger::endl;
+               << " => ieta " << ieta << " iphi " << iphi;
   return std::make_tuple(iphi, ieta);
 }
 
@@ -1003,7 +1000,7 @@ Point3D<double> Geometry::RelPosCellInSModule(Int_t absId) const
   }
 
   LOG(DEBUG) << "absId " << absId << " nSupMod " << nSupMod << " iphi " << iphi << " ieta " << ieta << " xr " << xr
-             << " yr " << yr << " zr " << zr << FairLogger::endl;
+             << " yr " << yr << " zr " << zr;
   return Point3D<double>(xr, yr, zr);
 }
 
@@ -1071,7 +1068,7 @@ Point3D<double> Geometry::RelPosCellInSModule(Int_t absId, Double_t distEff) con
   }
 
   LOG(DEBUG) << "absId " << absId << " nSupMod " << nSupMod << " iphi " << iphi << " ieta " << ieta << " xr " << xr
-             << " yr " << yr << " zr " << zr << FairLogger::endl;
+             << " yr " << yr << " zr " << zr;
   return Point3D<double>(xr, yr, zr);
 }
 
@@ -1095,7 +1092,7 @@ void Geometry::CreateListOfTrd1Modules()
   ShishKebabTrd1Module& mod = mShishKebabTrd1Modules.back();
   mEtaMaxOfTRD1 = mod.GetMaxEtaOfModule();
   LOG(DEBUG2) << " mShishKebabTrd1Modules has " << mShishKebabTrd1Modules.size() << " modules : max eta "
-              << std::setw(5) << std::setprecision(4) << mEtaMaxOfTRD1 << FairLogger::endl;
+              << std::setw(5) << std::setprecision(4) << mEtaMaxOfTRD1;
 
   // define grid for cells in eta(z) and x directions in local coordinates system of SM
   // Works just for 2x2 case only -- ?? start here
@@ -1104,7 +1101,7 @@ void Geometry::CreateListOfTrd1Modules()
   // Define grid for cells in phi(y) direction in local coordinates system of SM
   // as for 2X2 as for 3X3 - Nov 8,2006
   //
-  LOG(DEBUG2) << " Cells grid in phi directions : size " << mCentersOfCellsPhiDir.size() << FairLogger::endl;
+  LOG(DEBUG2) << " Cells grid in phi directions : size " << mCentersOfCellsPhiDir.size();
 
   Int_t ind = 0; // this is phi index
   Int_t ieta = 0, nModule = 0;
@@ -1134,7 +1131,7 @@ void Geometry::CreateListOfTrd1Modules()
       mPhiCentersOfCells[ind] = phi;
 
       LOG(DEBUG2) << " ind " << std::setw(2) << std::setprecision(2) << ind << " : y " << std::setw(8)
-                  << std::setprecision(3) << mCentersOfCellsPhiDir[ind] << FairLogger::endl;
+                  << std::setprecision(3) << mCentersOfCellsPhiDir[ind];
       ind++;
     }
   }
@@ -1143,7 +1140,7 @@ void Geometry::CreateListOfTrd1Modules()
   mCentersOfCellsXDir.resize(mNZ * mNETAdiv);
   mEtaCentersOfCells.resize(mNZ * mNETAdiv * mNPhi * mNPHIdiv);
 
-  LOG(DEBUG2) << " Cells grid in eta directions : size " << mCentersOfCellsEtaDir.size() << FairLogger::endl;
+  LOG(DEBUG2) << " Cells grid in eta directions : size " << mCentersOfCellsEtaDir.size();
 
   for (Int_t it = 0; it < mNZ; it++) {
     const ShishKebabTrd1Module& trd1 = GetShishKebabModule(it);
@@ -1184,7 +1181,7 @@ void Geometry::CreateListOfTrd1Modules()
   for (Int_t i = 0; i < mCentersOfCellsEtaDir.size(); i++) {
     LOG(DEBUG2) << " ind " << std::setw(2) << std::setprecision(2) << i + 1 << " : z " << std::setw(8)
                 << std::setprecision(3) << mCentersOfCellsEtaDir[i] << " : x " << std::setw(8)
-                << std::setprecision(3) << mCentersOfCellsXDir[i] << FairLogger::endl;
+                << std::setprecision(3) << mCentersOfCellsXDir[i];
   }
 }
 
@@ -1199,9 +1196,9 @@ Bool_t Geometry::Impact(const TParticle* particle) const
 {
   Bool_t in = kFALSE;
   Int_t absID = 0;
-  Point3D<double> vimpact = { 0, 0, 0 };
+  Point3D<double> vimpact = {0, 0, 0};
 
-  ImpactOnEmcal({ particle->Vx(), particle->Vy(), particle->Vz() }, particle->Theta(), particle->Phi(), absID, vimpact);
+  ImpactOnEmcal({particle->Vx(), particle->Vy(), particle->Vz()}, particle->Theta(), particle->Phi(), absID, vimpact);
 
   if (absID >= 0)
     in = kTRUE;
@@ -1233,7 +1230,7 @@ void Geometry::ImpactOnEmcal(const Point3D<double>& vtx, Double_t theta, Double_
   try {
     RelPosCellInSModule(absId).GetCoordinates(loc[0], loc[1], loc[2]);
   } catch (InvalidCellIDException& e) {
-    LOG(ERROR) << e.what() << FairLogger::endl;
+    LOG(ERROR) << e.what();
     return;
   }
 
@@ -1258,7 +1255,7 @@ void Geometry::ImpactOnEmcal(const Point3D<double>& vtx, Double_t theta, Double_
   try {
     RelPosCellInSModule(absId2).GetCoordinates(loc2[0], loc2[1], loc2[2]);
   } catch (InvalidCellIDException& e) {
-    LOG(ERROR) << e.what() << FairLogger::endl;
+    LOG(ERROR) << e.what();
     return;
   }
 
@@ -1266,7 +1263,7 @@ void Geometry::ImpactOnEmcal(const Point3D<double>& vtx, Double_t theta, Double_
   try {
     RelPosCellInSModule(absId3).GetCoordinates(loc3[0], loc3[1], loc3[2]);
   } catch (InvalidCellIDException& e) {
-    LOG(ERROR) << e.what() << FairLogger::endl;
+    LOG(ERROR) << e.what();
     return;
   }
 
@@ -1293,8 +1290,8 @@ void Geometry::ImpactOnEmcal(const Point3D<double>& vtx, Double_t theta, Double_
   Double_t dist = mLongModuleSize / 2.;
   Double_t norm = TMath::Sqrt(a * a + b * b + c * c);
   Double_t glob4[3] = {};
-  Vector3D<double> dir = { a, b, c };
-  Point3D<double> point = { glob[0], glob[1], glob[2] };
+  Vector3D<double> dir = {a, b, c};
+  Point3D<double> point = {glob[0], glob[1], glob[2]};
   if (point.Dot(dir) < 0)
     dist *= -1;
   glob4[0] = glob[0] - dist * a / norm;
@@ -1370,7 +1367,7 @@ o2::emcal::AcceptanceType_t Geometry::IsInEMCALOrDCAL(const Point3D<double>& pnt
 const TGeoHMatrix* Geometry::GetMatrixForSuperModule(Int_t smod) const
 {
   if (smod < 0 || smod > mNumberOfSuperModules)
-    LOG(FATAL) << "Wrong supermodule index -> " << smod << FairLogger::endl;
+    LOG(FATAL) << "Wrong supermodule index -> " << smod;
 
   if (!SMODULEMATRIX[smod]) {
     if (gGeoManager)
@@ -1390,7 +1387,7 @@ const TGeoHMatrix* Geometry::GetMatrixForSuperModule(Int_t smod) const
 const TGeoHMatrix* Geometry::GetMatrixForSuperModuleFromArray(Int_t smod) const
 {
   if (smod < 0 || smod > mNumberOfSuperModules)
-    LOG(FATAL) << "Wrong supermodule index -> " << smod << FairLogger::endl;
+    LOG(FATAL) << "Wrong supermodule index -> " << smod;
 
   return SMODULEMATRIX[smod];
 }
@@ -1491,13 +1488,11 @@ void Geometry::RecalculateTowerPosition(Float_t drow, Float_t dcol, const Int_t 
 
     // Do some basic checks
     if (dcol >= 47.5 || dcol < -0.5) {
-      LOG(ERROR) << "Bad tower coordinate dcol=" << dcol << ", where dcol >= 47.5 || dcol<-0.5; org: " << dcolorg
-                 << FairLogger::endl;
+      LOG(ERROR) << "Bad tower coordinate dcol=" << dcol << ", where dcol >= 47.5 || dcol<-0.5; org: " << dcolorg;
       return;
     }
     if (drow >= 23.5 || drow < -0.5) {
-      LOG(ERROR) << "Bad tower coordinate drow=" << drow << ", where drow >= 23.5 || drow<-0.5; org: " << droworg
-                 << FairLogger::endl;
+      LOG(ERROR) << "Bad tower coordinate drow=" << drow << ", where drow >= 23.5 || drow<-0.5; org: " << droworg;
       return;
     }
     if (sm >= nSMod || sm < 0) {
@@ -1536,7 +1531,7 @@ void Geometry::RecalculateTowerPosition(Float_t drow, Float_t dcol, const Int_t 
     double xx = y - geoBox[sm]->GetDX();
     double yy = -x + geoBox[sm]->GetDY();
     double zz = z - geoBox[sm]->GetDZ();
-    const double localIn[3] = { xx, yy, zz };
+    const double localIn[3] = {xx, yy, zz};
     double dglobal[3];
     // geoSMMatrix[sm]->Print();
     // printf("TFF Local    (row = %d, col = %d, x = %3.2f,  y = %3.2f, z = %3.2f)\n", iroworg, icolorg, localIn[0],

@@ -28,6 +28,7 @@ o2_add_library(Framework
                        src/CommonDataProcessors.cxx
                        src/CompletionPolicy.cxx
                        src/CompletionPolicyHelpers.cxx
+                       src/DispatchPolicy.cxx
                        src/ConfigParamsHelper.cxx
                        src/DDSConfigHelpers.cxx
                        src/DataAllocator.cxx
@@ -40,6 +41,7 @@ o2_add_library(Framework
                        src/DataSampling.cxx
                        src/DataSamplingConditionFactory.cxx
                        src/DataSamplingHeader.cxx
+                       src/DataSamplingConditionCustom.cxx
                        src/DataSamplingConditionNConsecutive.cxx
                        src/DataSamplingConditionPayloadSize.cxx
                        src/DataSamplingConditionRandom.cxx
@@ -231,6 +233,7 @@ foreach(w
         DanglingInputs
         DanglingOutputs
         DataAllocator
+        StaggeringWorkflow
         Forwarding
         ParallelPipeline
         ParallelProducer
