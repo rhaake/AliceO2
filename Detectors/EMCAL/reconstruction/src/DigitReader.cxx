@@ -11,88 +11,62 @@
 /// \file DigitReader.cxx
 /// \brief Implementation of EMCAL digit reader
 
+#include "CommonUtils/RootChain.h"
 #include "EMCALReconstruction/DigitReader.h"
 #include "FairLogger.h" // for LOG
 
-using namespace o2::Emcal;
+using namespace o2::emcal;
 using o2::emcal::Digit;
 
 
 //______________________________________________________________________________
-void DigitPixelReader::openInput(const std::string inpName)
+void DigitReader::openInput(const std::string fileName)
 {
-  // open input file, load digits, MC labels
-  assert(det.getID() == o2::detectors::DetID::ITS || det.getID() == o2::detectors::DetID::MFT);
-
   clear();
-  std::string detName = det.getName();
-
-  if (!(mInputTree = o2::utils::RootChain::load("o2sim", inpName))) {
-    LOG(FATAL) << "Failed to load Digits tree from " << inpName << FairLogger::endl;
+  if (!(mInputTree = o2::utils::RootChain::load("o2sim", fileName))) {
+    LOG(FATAL) << "Failed to load digits tree from " << fileName;
   }
-  mInputTree->SetBranchAddress((detName + "Digit").c_str(), &mDigitsSelf);
-  if (!mDigitsSelf) {
-    LOG(FATAL) << "Failed to find " << (detName + "Digit").c_str() << " branch in the " << mInputTree->GetName()
-               << " from file " << inpName << FairLogger::endl;
+  mInputTree->SetBranchAddress("EMCALDigit", &mDigitArray);
+  if (!mDigitArray) {
+    LOG(FATAL) << "Failed to find EMCALDigit branch in the " << mInputTree->GetName()
+               << " from file " << fileName;
   }
-  setDigits(mDigitsSelf);
-
-  if (!(mInputTreeROF = o2::utils::RootChain::load((detName + "DigitROF").c_str(), inpName))) {
-    LOG(FATAL) << "Failed to load ROF records tree from " << inpName << FairLogger::endl;
-  }
-  mInputTreeROF->SetBranchAddress((detName + "DigitROF").c_str(), &mROFRecVecSelf);
-  if (!mROFRecVecSelf) {
-    LOG(FATAL) << "Failed to find " << (detName + "DigitROF").c_str() << " branch in the " << mInputTree->GetName()
-               << " from file " << inpName << FairLogger::endl;
-  }
-  setROFRecords(mROFRecVecSelf);
-
-  if (!(mInputTreeMC2ROF = o2::utils::RootChain::load((detName + "DigitMC2ROF").c_str(), inpName))) {
-    LOG(FATAL) << "Failed to load MC2ROF records tree from " << inpName << FairLogger::endl;
-  }
-  mInputTreeMC2ROF->SetBranchAddress((detName + "DigitMC2ROF").c_str(), &mMC2ROFRecVecSelf);
-  if (!mMC2ROFRecVecSelf) {
-    LOG(FATAL) << "Failed to find " << (detName + "DigitMC2ROF").c_str() << " branch in the " << mInputTree->GetName()
-               << " from file " << inpName << FairLogger::endl;
-  }
-  setMC2ROFRecords(mMC2ROFRecVecSelf);
-
-  mInputTree->SetBranchAddress((detName + "DigitMCTruth").data(), &mDigitsMCTruthSelf);
-  setDigitsMCTruth(mDigitsMCTruthSelf);
 }
 
 //______________________________________________________________________________
-bool DigitPixelReader::readNextEntry()
+bool DigitReader::readNextEntry()
 {
-  // load next entry from the self-managed input
+  // Load next entry from the self-managed input
+
+  if(mCurrentEntry >= mInputTree->GetEntriesFast())
+    return false;
+
+  mInputTree->GetEntry(mCurrentEntry);
+  mCurrentEntry++;
+  return true;
+
+  /*
+  mCurrentEntry
   auto nev = mInputTree->GetEntries();
-  if (mInputTreeROF->GetEntries() != nev || nev != 1) {
-    LOG(FATAL) << "In the self-managed mode the Digits and ROFRecords trees must have 1 entry only";
+  if (nev != 1) {
+    LOG(FATAL) << "In the self-managed mode the digits trees must have 1 entry only";
   }
   auto evID = mInputTree->GetReadEntry();
   if (evID < -1)
     evID = -1;
   if (++evID < nev) {
-    init();
     mInputTree->GetEntry(evID);
-    mInputTreeROF->GetEntry(evID);
-    if (evID == 0) {
-      mInputTreeMC2ROF->GetEntry(0); // onle one entry is expected
-    }
     return true;
   } else {
     return false;
   }
+  */
 }
 
 //______________________________________________________________________________
-void DigitPixelReader::clear()
+void DigitReader::clear()
 {
   // clear data structures
-  mInputTree.reset();
-  delete mDigitsSelf;
-  delete mDigitsMCTruthSelf;
-  mDigitsMCTruthSelf = nullptr;
-  mDigitsSelf = nullptr;
+  mInputTree.reset(); // here we reset the unique ptr, not the tree!
 }
 

@@ -235,7 +235,7 @@ class Geometry
   //
   EMCALSMType GetSMType(Int_t nSupMod) const
   {
-    if (nSupMod > mNumberOfSuperModules)
+    if (nSupMod >= mNumberOfSuperModules)
       return NOT_EXISTENT;
     return mEMCSMSystem[nSupMod];
   }

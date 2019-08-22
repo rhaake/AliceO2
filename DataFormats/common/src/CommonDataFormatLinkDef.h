@@ -25,7 +25,7 @@
 #pragma link C++ class o2::dataformats::TimeStamp < float> + ;
 #pragma link C++ class o2::dataformats::TimeStamp < double> + ;
 #pragma link C++ class o2::dataformats::TimeStamp < int> + ;
-#pragma link C++ class o2::dataformats::TimeStamp < Float16_t > + ;
+//#pragma link C++ class o2::dataformats::TimeStamp < Float16_t> + ;
 #pragma link C++ class o2::dataformats::TimeStampWithError < float, float> + ;
 #pragma link C++ class o2::dataformats::TimeStampWithError < double, double> + ;
 #pragma link C++ class o2::dataformats::TimeStampWithError < int, int> + ;
@@ -35,6 +35,7 @@
 #pragma link C++ class o2::dataformats::RangeReference < o2::dataformats::EvIndex < int, int>, int> + ;
 
 #pragma link C++ class o2::dataformats::RangeRefComp < 4> + ; // reference to a set with 15 entries max (ITS clusters)
+#pragma link C++ class o2::dataformats::RangeRefComp < 8> + ; // reference to a range (EMCAL clusters)
 
 #pragma link C++ class o2::InteractionRecord + ;
 #pragma link C++ class o2::InteractionTimeRecord + ;

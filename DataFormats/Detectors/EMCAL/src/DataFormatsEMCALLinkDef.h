@@ -14,6 +14,7 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
+#pragma link C++ class o2::dataformats::TimeStamp < Float16_t> + ;
 #pragma link C++ class o2::emcal::Cell + ;
 #pragma link C++ class o2::emcal::Digit + ;
 #pragma link C++ class o2::emcal::Cluster + ;

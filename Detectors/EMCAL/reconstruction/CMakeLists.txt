@@ -16,6 +16,7 @@ o2_add_library(EMCALReconstruction
                        src/ClusterizerParameters.cxx
                        src/Clusterizer.cxx
                        src/ClusterizerTask.cxx
+                       src/DigitReader.cxx
                PUBLIC_LINK_LIBRARIES FairRoot::Base O2::Headers
                                      AliceO2::InfoLogger
                                      O2::EMCALBase)
@@ -27,6 +28,7 @@ o2_target_root_dictionary(
                                   include/EMCALReconstruction/ClusterizerParameters.h
                                   include/EMCALReconstruction/Clusterizer.h
                                   include/EMCALReconstruction/ClusterizerTask.h
+                                  include/EMCALReconstruction/DigitReader.h
 )
 
 o2_add_executable(rawreader-file

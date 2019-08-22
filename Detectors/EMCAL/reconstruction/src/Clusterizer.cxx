@@ -70,6 +70,8 @@ void Clusterizer::getClusterFromNeighbours(std::vector<Digit*>& clusterDigits, i
 //____________________________________________________________________________
 void Clusterizer::getTopologicalRowColumn(const Digit& digit, int& row, int& column)
 {
+  LOG(WARNING) << "Get cell index for digit with tower ID " << digit.getTower();
+
   // Get SM number and relative row/column for SM
   auto cellIndex    = mEMCALGeometry->GetCellIndex(digit.getTower());
   int nSupMod       = std::get<0>(cellIndex);

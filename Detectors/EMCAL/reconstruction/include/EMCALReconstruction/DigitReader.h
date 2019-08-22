@@ -14,6 +14,7 @@
 #ifndef ALICEO2_EMCAL_DIGITREADER_H
 #define ALICEO2_EMCAL_DIGITREADER_H
 
+#include "TTree.h"
 #include "DataFormatsEMCAL/Digit.h"
 
 namespace o2
@@ -21,60 +22,27 @@ namespace o2
 namespace emcal
 {
 /// \class DigitReader
-/// \brief DigitReader class for EMCAL
+/// \brief DigitReader class for EMCAL. Loads digits and feeds them to clusterizer
 ///
 class DigitReader
 {
  public:
-  DataReader() = default;
-  ~DataReader() = default;
+  DigitReader() = default;
+  ~DigitReader() = default;
 
-  //
- protected:
-  //
-};
-
-//_______________________________________________________________________
-
-/// \class DigitDataReader
-/// \brief DigitDataReader class for TOF. Feeds the MC digits to the Cluster Finder
-///
-class DigitDataReader : public DataReader
-{
- public:
-  DigitDataReader() = default;
-  void setDigitArray(const std::vector<o2::tof::Digit>* a)
-  {
-    mDigitArray = a;
-    mIdx = 0;
-  }
-
-  void init() override
-  {
-    mIdx = 0;
-    mLastDigit = nullptr;
-  }
-
-  Bool_t getNextStripData(StripData& stripData) override;
-
+  void openInput(const std::string fileName);
+  bool readNextEntry();
+  void clear();
+  const std::vector<o2::emcal::Digit>* getDigitArray() const { return mDigitArray; };
  private:
-  const std::vector<o2::tof::Digit>* mDigitArray = nullptr;
-  const Digit* mLastDigit = nullptr;
-  Int_t mIdx = 0;
+  std::vector<o2::emcal::Digit>* mDigitArray = nullptr;
+  std::unique_ptr<TTree> mInputTree;       // input tree for digits
+  int mCurrentEntry;                       // current entry in input file
+
+ ClassDef(DigitReader, 1);
 };
 
-//_______________________________________________________________________
-
-/// \class RawDataReader
-/// \brief RawDataReader class for TOF. Feeds raw data to the Cluster Finder
-///
-class RawDataReader : public DataReader
-{
- public:
-  Bool_t getNextStripData(StripData& stripData) override;
-};
-
-} // namespace tof
+} // namespace emcal
 } // namespace o2
 
 #endif /* ALICEO2_EMCAL_DIGITREADER_H */
