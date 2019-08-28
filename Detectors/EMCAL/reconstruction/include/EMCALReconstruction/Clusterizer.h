@@ -13,6 +13,7 @@
 #ifndef ALICEO2_EMCAL_CLUSTERIZER_H
 #define ALICEO2_EMCAL_CLUSTERIZER_H
 
+#include <array>
 #include "Rtypes.h"
 #include "DataFormatsEMCAL/Cluster.h"
 #include "DataFormatsEMCAL/Digit.h"
@@ -64,11 +65,10 @@ class Clusterizer
   private:
     void                getClusterFromNeighbours(std::vector<Digit*>& clusterDigits, int row, int column);
     void                getTopologicalRowColumn(const Digit& digit, int& row, int& column);
-
     Geometry*           mEMCALGeometry;              //!<! pointer to geometry for utilities
-    cellWithE           mSeedList[NROWS*NCOLS];      //!<! seed array
-    Digit*              mDigitMap[NROWS][NCOLS];     //!<! topology arrays
-    bool                mCellMask[NROWS][NCOLS];     //!<! topology arrays
+    std::array<cellWithE, NROWS*NCOLS>           mSeedList;      //!<! seed array
+    std::array<std::array<Digit*, NCOLS>, NROWS> mDigitMap;   //!<! topology arrays
+    std::array<std::array<bool, NCOLS>, NROWS>   mCellMask;   //!<! topology arrays
 
     std::vector<Cluster> mFoundClusters;                  ///<  vector of cluster objects
     std::vector<Short_t> mDigitIndices;                   ///<  vector of associated digit tower ID, ordered by cluster

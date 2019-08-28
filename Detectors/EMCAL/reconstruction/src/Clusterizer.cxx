@@ -118,8 +118,12 @@ void Clusterizer::findClusters(const std::vector<Digit>& digitArray)
   // --> Seed cell and all neighbours belonging to cluster will be put in 2D bitmap
 
   // Reset digit maps and cell masks
-  std::memset(mCellMask, 0, sizeof(bool) * NROWS*NCOLS);
-  std::memset(mDigitMap, 0, sizeof(Digit*) * NROWS*NCOLS);
+  // Loop over one array dim, then reset each array
+  for(auto iArr = 0; iArr<NROWS; iArr++)
+  {
+    mCellMask[iArr].fill(0);
+    mDigitMap[iArr].fill(0);
+  }
 
   // Calibrate digits and fill the maps/arrays
   int nCells = 0;
@@ -147,7 +151,8 @@ void Clusterizer::findClusters(const std::vector<Digit>& digitArray)
   }
 
   // Sort struct arrays with ascending energy
-  std::sort(mSeedList, mSeedList+nCells);
+  std::sort(mSeedList.begin(), std::next(std::begin(mSeedList), nCells));
+  //std::sort(mSeedList, mSeedList+nCells);
 
   // Take next valid digit in calorimeter as seed (in descending energy order)
   for(int i=nCells-1; i>=0; i--)
