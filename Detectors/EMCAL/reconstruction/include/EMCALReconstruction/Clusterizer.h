@@ -65,8 +65,8 @@ class Clusterizer
   private:
     void                getClusterFromNeighbours(std::vector<Digit*>& clusterDigits, int row, int column);
     void                getTopologicalRowColumn(const Digit& digit, int& row, int& column);
-    Geometry*           mEMCALGeometry;              //!<! pointer to geometry for utilities
-    std::array<cellWithE, NROWS*NCOLS>           mSeedList;      //!<! seed array
+    Geometry*                                    mEMCALGeometry = nullptr; //!<! pointer to geometry for utilities
+    std::array<cellWithE, NROWS*NCOLS>           mSeedList;   //!<! seed array
     std::array<std::array<Digit*, NCOLS>, NROWS> mDigitMap;   //!<! topology arrays
     std::array<std::array<bool, NCOLS>, NROWS>   mCellMask;   //!<! topology arrays
 
